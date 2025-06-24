@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Sign Up</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,7 +15,7 @@
             margin: 0;
         }
 
-        .login-container {
+        .signup-container {
             background-color: white;
             padding: 20px;
             border-radius: 8px;
@@ -37,7 +37,8 @@
         }
 
         input[type="text"],
-        input[type="password"] {
+        input[type="password"],
+        input[type="email"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
@@ -74,52 +75,55 @@
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <form id="loginForm">
-            <label for="email">Email/Username:</label>
-            <input type="text" id="email" name="email" required>
+    <div class="signup-container">
+        <h2>Sign Up</h2>
+        <form id="signupForm">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-            <button type="submit">Submit</button>
+            <button type="submit">Sign Up</button>
             <p class="error" id="errorMessage"></p>
         </form>
         <div class="footer">
-            <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+            <p>Already have an account? <a href="login.html">Log in</a></p>
         </div>
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        document.getElementById('signupForm').addEventListener('submit', async function(event) {
             event.preventDefault(); // Prevent the default form submission
 
             const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const errorMessage = document.getElementById('errorMessage');
 
             // Basic UI validation
-            if (!email || !password) {
-                errorMessage.textContent = 'Both fields are required.';
+            if (!email || !username || !password) {
+                errorMessage.textContent = 'All fields are required.';
                 return;
             }
 
             // Send credentials to Flask backend
             try {
-                const response = await fetch('/login', {
+                const response = await fetch('/signup', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ email, password }),
+                    body: JSON.stringify({ email, username, password }),
                 });
 
                 if (response.ok) {
-                    // Redirect to dashboard or home page on success
-                    window.location.href = '/dashboard'; // Change to your dashboard URL
+                    // Redirect to login page on success
+                    window.location.href = 'login.html';
                 } else {
-                    // Handle failed login
+                    // Handle failed sign-up
                     const errorData = await response.json();
-                    errorMessage.textContent = errorData.message || 'Login failed. Please try again.';
+                    errorMessage.textContent = errorData.message || 'Sign-up failed. Please try again.';
                 }
             } catch (error) {
                 errorMessage.textContent = 'An error occurred. Please try again later.';
